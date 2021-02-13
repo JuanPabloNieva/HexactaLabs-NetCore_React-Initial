@@ -16,15 +16,22 @@ namespace Stock.AppService.Services
 
         public new Provider Create(Provider entity)
         {
-            return base.Create(entity);
-        }
+            if (this.NombreUnico(entity.Name))
+            {
+                return base.Create(entity);
+            }
 
-        public Provider Update(Provider entity)
+            throw new System.Exception("The name is already in use");
+        }
+        private bool NombreUnico(string name)
         {
-            return base.Update(entity);
-        }
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return false;
+            }
 
-        public void Delete(Provider entity) => base.Delete(entity);
+            return this.Repository.List(x => x.Name.ToUpper().Equals(name.ToUpper())).Count == 0;
+        }
 
         public IEnumerable<Provider> Search(Expression<Func<Provider, bool>> filter)
         {

@@ -44,6 +44,34 @@ namespace Stock.Api.Controllers
                 return Ok(new { Success = false, Message = "The name is already in use" });
             }
         }
+        
+        [HttpGet]
+        public ActionResult<IEnumerable<ProviderDTO>> Get()
+        {
+            try
+            {
+                var result = this.service.GetAll();
+                return this.mapper.Map<IEnumerable<ProviderDTO>>(result).ToList();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<ProviderDTO> Get(string id)
+        {
+            try
+            {
+                var result = this.service.Get(id);
+                return this.mapper.Map<ProviderDTO>(result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
 
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
@@ -82,8 +110,8 @@ namespace Stock.Api.Controllers
                     model.Condition.Equals(ActionDto.AND));
             }
 
-            var stores = this.service.Search(filter);
-            return Ok(stores);
+            var providers = this.service.Search(filter);
+            return Ok(providers);
         }
     }
 }
